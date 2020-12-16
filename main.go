@@ -58,14 +58,12 @@ func main() {
 
 	handleError(err)
 
-	url := s3.GeneratePresignedURL(simples3.PresignedInput{
-		Bucket:    settings.S3Bucket,
-		ObjectKey: fileInfo.Name(),
-		Method:    "GET",
-		Endpoint:  settings.S3Url,
-	})
-
-	url = stripQueryString(url)
+	var url string
+	if len(settings.S3Url) > 0 {
+		url = "https://" + settings.S3Url + "/" + fileInfo.Name()
+	} else {
+		url = "https://" + settings.S3Bucket + ".storage.yandexcloud.net/" + fileInfo.Name()
+	}
 
 	io.WriteString(os.Stdout, url)
 }
